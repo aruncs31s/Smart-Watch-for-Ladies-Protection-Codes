@@ -2,19 +2,19 @@
  * Source:
  * https://randomnerdtutorials.com/esp8266-nodemcu-neo-6m-gps-module-arduino/
  */
+
 #include <SoftwareSerial.h>
 #include <TinyGPS++.h>
 
-// Define the RX and TX pins for Software Serial 2
-const int RX = D5; // This should connect to the TX pin of the GPS module
-const int TX = D6; // This should connect to the RX pin of the GPS module
+const int GPS_RX = D5; // This should connect to the TX pin of the GPS module
+const int GPS_TX = D6; // This should connect to the RX pin of the GPS module
 // #define TX D6
 
 // The TinyGPS++ object
 TinyGPSPlus gps;
 
 // Create an instance of Software Serial
-SoftwareSerial gpsSerial(RX, TX);
+SoftwareSerial gpsSerial(GPS_RX, GPS_TX);
 
 void setup() {
   // Serial Monitor
