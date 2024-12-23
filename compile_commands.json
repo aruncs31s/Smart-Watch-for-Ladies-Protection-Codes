@@ -150,13 +150,19 @@
         "output": ".pio/build/uno/FrameworkArduino/wiring_shift.c.o"
     },
     {
+        "command": "/home/aruncs/.platformio/packages/toolchain-atmelavr/bin/avr-g++ -o .pio/build/uno/lib36b/TinyGPSPlus/TinyGPS++.cpp.o -c -fno-exceptions -fno-threadsafe-statics -fpermissive -std=gnu++11 -mmcu=atmega328p -Os -Wall -ffunction-sections -fdata-sections -flto -DPLATFORMIO=60116 -DARDUINO_AVR_UNO -DF_CPU=16000000L -DARDUINO_ARCH_AVR -DARDUINO=10808 -I.pio/libdeps/uno/TinyGPSPlus/src -I/home/aruncs/.platformio/packages/framework-arduino-avr/cores/arduino -I/home/aruncs/.platformio/packages/framework-arduino-avr/variants/standard .pio/libdeps/uno/TinyGPSPlus/src/TinyGPS++.cpp",
+        "directory": "/home/aruncs/Projects/Electronics/Smart-Watch-for-Ladies-Protection/Smart-Watch-for-Ladies-Protection-Codes",
+        "file": ".pio/libdeps/uno/TinyGPSPlus/src/TinyGPS++.cpp",
+        "output": ".pio/build/uno/lib36b/TinyGPSPlus/TinyGPS++.cpp.o"
+    },
+    {
         "command": "/home/aruncs/.platformio/packages/toolchain-atmelavr/bin/avr-g++ -o .pio/build/uno/libf0c/SoftwareSerial/SoftwareSerial.cpp.o -c -fno-exceptions -fno-threadsafe-statics -fpermissive -std=gnu++11 -mmcu=atmega328p -Os -Wall -ffunction-sections -fdata-sections -flto -DPLATFORMIO=60116 -DARDUINO_AVR_UNO -DF_CPU=16000000L -DARDUINO_ARCH_AVR -DARDUINO=10808 -I/home/aruncs/.platformio/packages/framework-arduino-avr/libraries/SoftwareSerial/src -I/home/aruncs/.platformio/packages/framework-arduino-avr/cores/arduino -I/home/aruncs/.platformio/packages/framework-arduino-avr/variants/standard /home/aruncs/.platformio/packages/framework-arduino-avr/libraries/SoftwareSerial/src/SoftwareSerial.cpp",
         "directory": "/home/aruncs/Projects/Electronics/Smart-Watch-for-Ladies-Protection/Smart-Watch-for-Ladies-Protection-Codes",
         "file": "/home/aruncs/.platformio/packages/framework-arduino-avr/libraries/SoftwareSerial/src/SoftwareSerial.cpp",
         "output": ".pio/build/uno/libf0c/SoftwareSerial/SoftwareSerial.cpp.o"
     },
     {
-        "command": "/home/aruncs/.platformio/packages/toolchain-atmelavr/bin/avr-g++ -o .pio/build/uno/src/main.cpp.o -c -fno-exceptions -fno-threadsafe-statics -fpermissive -std=gnu++11 -mmcu=atmega328p -Os -Wall -ffunction-sections -fdata-sections -flto -DPLATFORMIO=60116 -DARDUINO_AVR_UNO -DF_CPU=16000000L -DARDUINO_ARCH_AVR -DARDUINO=10808 -Iinclude -Isrc -I/home/aruncs/.platformio/packages/framework-arduino-avr/libraries/SoftwareSerial/src -I/home/aruncs/.platformio/packages/framework-arduino-avr/cores/arduino -I/home/aruncs/.platformio/packages/framework-arduino-avr/variants/standard src/main.cpp",
+        "command": "/home/aruncs/.platformio/packages/toolchain-atmelavr/bin/avr-g++ -o .pio/build/uno/src/main.cpp.o -c -fno-exceptions -fno-threadsafe-statics -fpermissive -std=gnu++11 -mmcu=atmega328p -Os -Wall -ffunction-sections -fdata-sections -flto -DPLATFORMIO=60116 -DARDUINO_AVR_UNO -DF_CPU=16000000L -DARDUINO_ARCH_AVR -DARDUINO=10808 -Iinclude -Isrc -I/home/aruncs/.platformio/packages/framework-arduino-avr/libraries/SoftwareSerial/src -I.pio/libdeps/uno/TinyGPSPlus/src -I/home/aruncs/.platformio/packages/framework-arduino-avr/cores/arduino -I/home/aruncs/.platformio/packages/framework-arduino-avr/variants/standard src/main.cpp",
         "directory": "/home/aruncs/Projects/Electronics/Smart-Watch-for-Ladies-Protection/Smart-Watch-for-Ladies-Protection-Codes",
         "file": "src/main.cpp",
         "output": ".pio/build/uno/src/main.cpp.o"

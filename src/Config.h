@@ -1,5 +1,6 @@
 #define BAUD_RATE 9600
 #define MIC_PIN A0
+#define GPS_BAUD_RATE 9600
 
 #if defined(ARDUINO)
 #define GSM_TX 3
