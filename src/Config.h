@@ -1,5 +1,5 @@
-#define BAUD_RATE 9600
-#define MIC_PIN A0
+#define BAUD_RATE 115200
+#define GPS_BAUD_RATE 9600
 #define GPS_BAUD_RATE 9600
 // TODO: Uncomment after editing
 // #define ESP8266
@@ -11,9 +11,19 @@
 #define GPS_RX D6 // This should connect to the RX pin of the GPS module
 // #endif
 
+// GSM_TX should be connected to the RX pin of the GSM module
+// GSM_RX should be connected to the TX pin of the GSM module
+#define GSM_TX D2
+#define GSM_RX D3
+#define MSG_TERMINATOR 0x1A
+#define SMALL_DELAY 500
+#define ONE_SECOND 1000
 // Where the push button is connected
 // TODO: Add a decoubling/debouncing capacitor to the button
 #define PUSH_BUTTON D1
+
+// Microphone pin
+#define MIC_PIN A0
 
 typedef struct {
   bool _gps_status;
