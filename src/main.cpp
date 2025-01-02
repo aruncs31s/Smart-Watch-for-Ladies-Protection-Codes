@@ -1,7 +1,3 @@
-/*
- * Source:
- * https://randomnerdtutorials.com/esp8266-nodemcu-neo-6m-gps-module-arduino/
- */
 
 #include "Arduino.h"
 #include "Config.h"
@@ -30,14 +26,14 @@ void updateSerial(short _delay = SMALL_DELAY) {
             .read()); // Forward what Software Serial received to Serial Port
   }
 }
-void sendText() {
+void sendText(char *number) {
   // Once the handshake test is successful, it will back to OK
   gsmSerial.println("AT");
   updateSerial();
   // Configuring TEXT mode
   gsmSerial.println("AT+CMGF=1");
   updateSerial();
-  gsmSerial.println("AT+CMGS=\"+917902504188\"");
+  gsmSerial.println("AT+CMGS=\"+91" + String(number) + "\"");
   updateSerial();
   gsmSerial.print("Lat: " + String(location._lat) +
                   " Lon: " + String(location._long)); // text content
@@ -57,14 +53,13 @@ void getLocation() {
   location._long = gps.location.lng();
   location._gps_status ^= 1;
 }
-bool sendSOS() {
+void sendSOS() {
   /*
    * @param none
    * @return -> used to indicate a sucessful SOS
    */
   getLocation();
   sendText();
-  return 1;
 }
 
 void setup() {
@@ -72,10 +67,10 @@ void setup() {
   // Start Serial 2 with the defined RX and TX pins and a baud rate of 9600
   gpsSerial.begin(GPS_BAUD_RATE);
   // Start GSM Serial
-  gsmSerial.begin(GSM_BOUD_RATE);
+  gsmSerial.begin(GSM_BAUD_RATE);
 
   // TODO: Make the ISR quick
-  attachInterrupt(PUSH_BUTTON, send_SOS, FALLING);
+  attachInterrupt(PUSH_BUTTON, sendSOS, FALLING);
 }
 
 void loop() {

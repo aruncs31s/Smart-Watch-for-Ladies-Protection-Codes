@@ -1,5 +1,5 @@
 #define BAUD_RATE 115200
-#define GPS_BAUD_RATE 9600
+#define GSM_BAUD_RATE 9600
 #define GPS_BAUD_RATE 9600
 // TODO: Uncomment after editing
 // #define ESP8266
