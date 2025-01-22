@@ -1,3 +1,10 @@
+/*
+ * In the circuit the D5 is connected to Tx of the Neo6m
+ * and D6 is connected to Rx of the Neo6m
+ * Which means that D5 is the Rx pin of the GPS Serial  and D6 is the Tx pin ie,
+ * -> GPS_TX = D6 , GPS_RX = D5
+ */
+
 #define BAUD_RATE 115200
 #define GSM_BAUD_RATE 9600
 #define GPS_BAUD_RATE 9600
@@ -7,8 +14,8 @@
 // #define GSM_TX 3
 // #define GSM_RX 2
 // #elif defined(ESP8266)
-#define GPS_TX D5 // This should connect to the TX pin of the GPS module
-#define GPS_RX D6 // This should connect to the RX pin of the GPS module
+#define GPS_TX D6 // This should connect to the TX pin of the GPS module
+#define GPS_RX D5 // This should connect to the RX pin of the GPS module
 // #endif
 
 // GSM_TX should be connected to the RX pin of the GSM module
