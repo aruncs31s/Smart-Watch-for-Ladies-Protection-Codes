@@ -1,86 +1,61 @@
+#define GPS_TX D5 // This should connect to the TX pin of the GPS module
+#define GPS_RX D6 // This should connect to the RX pin of the GPS module
+#define BAUD_RATE 9600
+#define GPS_BAUD_RATE 9600
 
-#include "Arduino.h"
-#include "Config.h"
+#if defined(ARDUINO)
+#define GSM_TX 3
+#define GSM_RX 2
+#elif defined(ESP8266)
+#define GSM_TX D5 // This should connect to the TX pin of the GPS module
+#define GSM_RX D6 // This should connect to the RX pin of the GPS module
+#endif
+#include <Arduino.h>
 #include <SoftwareSerial.h>
 #include <TinyGPS++.h>
 
-// All Global Object and variable declerations
 TinyGPSPlus gps;
-bool isEmergency;
-Location location = {0, 0, 0};
-Numbers number = {"7902340086", "7902504188"}; // Police and Parent
 
-// Create an instances of Software Serial
-
+// Create an instance of Software Serial
 SoftwareSerial gpsSerial(GPS_RX, GPS_TX);
-SoftwareSerial gsmSerial(GSM_TX, GSM_RX);
-
-void updateSerial(short _delay = SMALL_DELAY) {
-  delay(500);
-  while (Serial.available()) {
-    gsmSerial.write(Serial.read());
-  }
-  while (gsmSerial.available()) {
-    Serial.write(
-        gsmSerial
-            .read()); // Forward what Software Serial received to Serial Port
-  }
-}
-void sendText(char *number) {
-  // Once the handshake test is successful, it will back to OK
-  gsmSerial.println("AT");
-  updateSerial();
-  // Configuring TEXT mode
-  gsmSerial.println("AT+CMGF=1");
-  updateSerial();
-  gsmSerial.println("AT+CMGS=\"+91" + String(number) + "\"");
-  updateSerial();
-  gsmSerial.print("Lat: " + String(location._lat) +
-                  " Lon: " + String(location._long)); // text content
-  updateSerial();
-  gsmSerial.write(MSG_TERMINATOR);
-}
-
-// This will continue to execute if there is no signal to the GPS module
-void getLocation() {
-  while (!location._gps_status) {
-    if (gpsSerial.available() > 0) {
-      gps.encode(gpsSerial.read());
-      location._gps_status ^= 1;
-    }
-  }
-  location._lat = gps.location.lat();
-  location._long = gps.location.lng();
-  location._gps_status ^= 1;
-}
-void sendSOS() {
-  /*
-   * @param none
-   * @return -> used to indicate a sucessful SOS
-   */
-  getLocation();
-  sendText();
-}
 
 void setup() {
-  Serial.begin(BAUD_RATE);
+  // Serial Monitor
+  Serial.begin(115200);
+
   // Start Serial 2 with the defined RX and TX pins and a baud rate of 9600
   gpsSerial.begin(GPS_BAUD_RATE);
-  // Start GSM Serial
-  gsmSerial.begin(GSM_BAUD_RATE);
-
-  // TODO: Make the ISR quick
-  attachInterrupt(PUSH_BUTTON, sendSOS, FALLING);
+  Serial.println("Software Serial started at 9600 baud rate");
 }
 
 void loop() {
-
+  // This sketch displays information every time a new sentence is correctly
+  // encoded.
   unsigned long start = millis();
+
   while (millis() - start < 1000) {
     while (gpsSerial.available() > 0) {
       gps.encode(gpsSerial.read());
     }
-
-    getLocation();
+    if (gps.location.isUpdated()) {
+      Serial.print("LAT: ");
+      Serial.println(gps.location.lat(), 6);
+      Serial.print("LONG: ");
+      Serial.println(gps.location.lng(), 6);
+      Serial.print("SPEED (km/h) = ");
+      Serial.println(gps.speed.kmph());
+      Serial.print("ALT (min)= ");
+      Serial.println(gps.altitude.meters());
+      Serial.print("HDOP = ");
+      Serial.println(gps.hdop.value() / 100.0);
+      Serial.print("Satellites = ");
+      Serial.println(gps.satellites.value());
+      Serial.print("Time in UTC: ");
+      Serial.println(String(gps.date.year()) + "/" + String(gps.date.month()) +
+                     "/" + String(gps.date.day()) + "," +
+                     String(gps.time.hour()) + ":" + String(gps.time.minute()) +
+                     ":" + String(gps.time.second()));
+      Serial.println("");
+    }
   }
 }
