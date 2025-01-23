@@ -1,5 +1,5 @@
-#define GPS_TX D5 // This should connect to the TX pin of the GPS module
-#define GPS_RX D6 // This should connect to the RX pin of the GPS module
+#define GPS_TX D6 // This should connect to the TX pin of the GPS module
+#define GPS_RX D5 // This should connect to the RX pin of the GPS module
 #define BAUD_RATE 9600
 #define GPS_BAUD_RATE 9600
 
