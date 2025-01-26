@@ -14,6 +14,8 @@
 // #define GSM_TX 3
 // #define GSM_RX 2
 // #elif defined(ESP8266)
+
+// NOTE: This is the correct one
 #define GPS_TX D6 // This should connect to the TX pin of the GPS module
 #define GPS_RX D5 // This should connect to the RX pin of the GPS module
 // #endif
