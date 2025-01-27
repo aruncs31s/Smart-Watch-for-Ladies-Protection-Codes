@@ -5,7 +5,7 @@
  * -> GPS_TX = D6 , GPS_RX = D5
  */
 
-#define BAUD_RATE 115200
+#define BAUD_RATE 9600
 #define GSM_BAUD_RATE 9600
 #define GPS_BAUD_RATE 9600
 // TODO: Uncomment after editing
@@ -39,6 +39,7 @@ typedef struct {
   double _lat;  // latitude
   double _long; // longitude
 } Location;
+
 typedef struct {
   const char *police;
   const char *parent;
