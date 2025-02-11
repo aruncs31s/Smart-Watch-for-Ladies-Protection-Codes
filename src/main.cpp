@@ -1,57 +1,39 @@
 #include "ESP8266WiFi.h"
-#include "NTPClient.h"
 #include "WiFiUdp.h"
+#include "watch.h"
 #include <Arduino.h>
 #include <Config.hpp>
 #include <LiquidCrystal_I2C.h>
+#include <SoftwareSerial.h>
+
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+// SoftwareSerial gsmSerial(GSM_TX, GSM_RX);
+
+// This flag is used to indicate that the SOS button is pressed
+// bool sendSMS = false;
+// Numbers number = {"7907489077", "7907489077"};
 
 // +5:30 hours for india
 const long utcOffsetInSeconds = 19800;
+
+WiFiUDP ntpUDP;
+NTPClient timeClient(ntpUDP, "pool.ntp.org", utcOffsetInSeconds);
 
 char daysOfTheWeek[7][12] = {"Sunday",   "Monday", "Tuesday", "Wednesday",
                              "Thursday", "Friday", "Saturday"};
 
 // Define NTP Client to get time
-WiFiUDP ntpUDP;
-NTPClient timeClient(ntpUDP, "pool.ntp.org", utcOffsetInSeconds);
-
-LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(BAUD_RATE);
   WiFi.begin(SSID, PASSWORD);
   timeClient.begin();
-
-  lcd.init();
-  lcd.clear();
-  lcd.backlight(); // Make sure backlight is on
-
-  lcd.setCursor(0, 0); // Set cursor to character 2 on line 0
-  lcd.print("Setting UP!");
-
+  lcd_initialize(lcd);
   while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
+    delay(HALD_SECOND);
     Serial.print(".");
   }
   lcd.clear();
 }
 
-void loop() {
-
-  timeClient.update();
-  lcd.setCursor(0, 0); // Set cursor to character 0 on line 0
-  lcd.print("Smart Watch");
-
-  lcd.setCursor(0, 1); // Move cursor to character 0 on line 1
-
-  lcd.print(daysOfTheWeek[timeClient.getDay()]);
-  lcd.print(" ");
-  lcd.print(timeClient.getHours());
-  lcd.print(":");
-  lcd.print(timeClient.getMinutes());
-  lcd.print(":");
-  lcd.print(timeClient.getSeconds());
-  Serial.println(timeClient.getFormattedTime());
-  delay(1000);
-  lcd.clear();
-}
+void loop() { update_time(lcd, timeClient, daysOfTheWeek); }
