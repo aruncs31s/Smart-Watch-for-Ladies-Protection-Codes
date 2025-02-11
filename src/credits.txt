@@ -1,0 +1,5 @@
+1. https://lastminuteengineers.com/esp8266-i2c-lcd-tutorial/ -> LCD Tutorial
+2. https://docs.arduino.cc/libraries/ntpclient/
+3. https://github.com/arduino-libraries/NTPClient/tree/master 
+4. https://docs.ai-thinker.com/_media/vc-02_v1.0.0_specification.pdf
+5. https://www.instructables.com/Getting-Time-From-Internet-Using-ESP8266-NTP-Clock/ 

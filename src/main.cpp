@@ -1,54 +1,57 @@
+#include "ESP8266WiFi.h"
+#include "NTPClient.h"
+#include "WiFiUdp.h"
 #include <Arduino.h>
-#include <Config.h>
-#include <SoftwareSerial.h>
+#include <Config.hpp>
+#include <LiquidCrystal_I2C.h>
 
-Numbers number = {"7907489077", "7907489077"};
-bool sendSMS = false;
+// +5:30 hours for india
+const long utcOffsetInSeconds = 19800;
 
-SoftwareSerial gsmSerial(GSM_TX, GSM_RX);
-void updateSerial() {
-  delay(500);
-  while (Serial.available()) {
-    gsmSerial.write(Serial.read());
-  }
-  while (gsmSerial.available()) {
-    Serial.write(gsmSerial.read());
-  }
-}
+char daysOfTheWeek[7][12] = {"Sunday",   "Monday", "Tuesday", "Wednesday",
+                             "Thursday", "Friday", "Saturday"};
 
-void send_sos(const char *theNumber) {
-  gsmSerial.println("AT"); // Returns OK if handshake successful
-  updateSerial();
+// Define NTP Client to get time
+WiFiUDP ntpUDP;
+NTPClient timeClient(ntpUDP, "pool.ntp.org", utcOffsetInSeconds);
 
-  gsmSerial.println("AT+CMGF=1"); // Configuring TEXT mode
-  updateSerial();
-  gsmSerial.println("AT+CMGS=\"+91" + String(theNumber) + "\"");
-  updateSerial();
-  gsmSerial.print("HI");
-  updateSerial();
-  gsmSerial.write(26);
-}
-
-void initiate_sms() { sendSMS = true; }
-
-void IRAM_ATTR theISR() {
-  Serial.println("Button Pressed");
-  initiate_sms();
-}
+LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 void setup() {
-  Serial.begin(9600);
-  gsmSerial.begin(9600);
-  attachInterrupt(D1, theISR, FALLING);
+  Serial.begin(115200);
+  WiFi.begin(SSID, PASSWORD);
+  timeClient.begin();
+
+  lcd.init();
+  lcd.clear();
+  lcd.backlight(); // Make sure backlight is on
+
+  lcd.setCursor(0, 0); // Set cursor to character 2 on line 0
+  lcd.print("Setting UP!");
+
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  lcd.clear();
 }
 
 void loop() {
-  Serial.println("Initializing...");
-  if (sendSMS) {
-    send_sos(number.parent);
-    send_sos(number.police);
-    sendSMS ^= 1;
-    ;
-  }
-  delay(5000);
+
+  timeClient.update();
+  lcd.setCursor(0, 0); // Set cursor to character 0 on line 0
+  lcd.print("Smart Watch");
+
+  lcd.setCursor(0, 1); // Move cursor to character 0 on line 1
+
+  lcd.print(daysOfTheWeek[timeClient.getDay()]);
+  lcd.print(" ");
+  lcd.print(timeClient.getHours());
+  lcd.print(":");
+  lcd.print(timeClient.getMinutes());
+  lcd.print(":");
+  lcd.print(timeClient.getSeconds());
+  Serial.println(timeClient.getFormattedTime());
+  delay(1000);
+  lcd.clear();
 }
