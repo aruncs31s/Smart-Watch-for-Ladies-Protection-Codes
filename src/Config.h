@@ -27,7 +27,7 @@
 #define ONE_SECOND 1000
 // Where the push button is connected
 // TODO: Add a decoubling/debouncing capacitor to the button
-#define PUSH_BUTTON D1
+#define PUSH_BUTTON D5
 
 // Microphone pin
 #define MIC_PIN A0
