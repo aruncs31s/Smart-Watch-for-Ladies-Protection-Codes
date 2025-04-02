@@ -7,7 +7,11 @@
 #include <SoftwareSerial.h>
 #include <TinyGPS++.h>
 
+// #define LCD_DISPLAY 
+
+#if defined(LCD_DISPLAY)
 LiquidCrystal_I2C lcd(0x27, 16, 2);
+#endif
 SoftwareSerial gsmSerial(GSM_TX, GSM_RX);
 TinyGPSPlus gps;
 SoftwareSerial gpsSerial(GPS_RX, GPS_TX);
@@ -16,9 +20,12 @@ SoftwareSerial gpsSerial(GPS_RX, GPS_TX);
 bool sendSMS = false;
 Numbers number = {"6300347998", "6300347998"};
 
+#if defined(LCD_DISPLAY)
 // +5:30 hours for india
 const long utcOffsetInSeconds = 19800;
+#endif
 
+#if defined(LCD_DISPLAY)
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "pool.ntp.org", utcOffsetInSeconds);
 
@@ -26,6 +33,7 @@ char daysOfTheWeek[7][12] = {"Sunday",   "Monday", "Tuesday", "Wednesday",
                              "Thursday", "Friday", "Saturday"};
 
 // Define NTP Client to get time
+#endif
 
 void updateSerial() {
   delay(500);
@@ -65,6 +73,7 @@ void setup() {
   attachInterrupt(D8, theISR, RISING);
 
   WiFi.begin(SSID, PASSWORD);
+  #if defined(LCD_DISPLAY)
   timeClient.begin();
   lcd_initialize(lcd);
   while (WiFi.status() != WL_CONNECTED) {
@@ -72,11 +81,13 @@ void setup() {
     Serial.print(".");
   }
   lcd.clear();
+  #endif
 }
 
 void loop() {
+#if defined(LCD_DISPLAY)
   update_time(lcd, timeClient, daysOfTheWeek);
-
+#endif
   while (gpsSerial.available() > 0) {
     gps.encode(gpsSerial.read());
   }
