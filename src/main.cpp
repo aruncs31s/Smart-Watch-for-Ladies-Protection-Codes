@@ -7,6 +7,19 @@
 #include <SoftwareSerial.h>
 #include <TinyGPS++.h>
 
+#define USE_ARDUINO_INTERRUPTS true    // Set-up low-level interrupts for most acurate BPM math
+#include <PulseSensorPlayground.h>     // Includes the PulseSensorPlayground Library
+const int PulseWire = A0;       // 'S' Signal pin connected to A0
+const int LED13 = 13;          // The on-board Arduino LED
+int Threshold = 550; 
+
+uint8_t myBPM = 0;
+
+
+                               
+PulseSensorPlayground pulseSensor;  // Creates an object
+
+
 // #define LCD_DISPLAY 
 
 #if defined(LCD_DISPLAY)
@@ -18,7 +31,7 @@ SoftwareSerial gpsSerial(GPS_RX, GPS_TX);
 
 // This flag is used to indicate that the SOS button is pressed
 bool sendSMS = false;
-Numbers number = {"6300347998", "6300347998"};
+Numbers number = {"8301868832", "6300347998"};
 
 #if defined(LCD_DISPLAY)
 // +5:30 hours for india
@@ -77,10 +90,11 @@ void IRAM_ATTR theISR() {
 void setup() {
   Serial.begin(BAUD_RATE);
   gsmSerial.begin(9600);
+  pulseSensor.analogInput(PulseWire);
   gpsSerial.begin(GPS_BAUD_RATE);
   attachInterrupt(D5, theISR, FALLING);
   attachInterrupt(D8, theISR, RISING);
-
+  pulseSensor.setThreshold(Threshold); 
   WiFi.begin(SSID, PASSWORD);
   #if defined(LCD_DISPLAY)
   timeClient.begin();
@@ -94,6 +108,8 @@ void setup() {
 }
 
 void loop() {
+  myBPM = pulseSensor.getBeatsPerMinute();
+
 #if defined(LCD_DISPLAY)
   update_time(lcd, timeClient, daysOfTheWeek);
 #endif
@@ -102,7 +118,7 @@ void loop() {
   }
 
   if (sendSMS && gps.location.isUpdated()) {
-    String coordinates = String(gps.location.lat(), 6) + String(gps.location.lng(), 6);
+    String coordinates = String(gps.location.lat(), 6) + "," + String(gps.location.lng(), 6);
     send_sos(number.parent, coordinates); 
     send_sos(number.police,coordinates);
     sendSMS = false;
@@ -110,6 +126,10 @@ void loop() {
   else if (sendSMS) {
     location_not_found(number.parent);
     location_not_found(number.police);
-    // sendSMS = false;
+    sendSMS = false;
   }
+  if(myBPM > 160){
+    sendSMS = true;
+  }
+
 }
