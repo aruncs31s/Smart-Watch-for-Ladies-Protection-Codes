@@ -45,6 +45,15 @@ void updateSerial() {
   }
 }
 
+void location_not_found(const char *theNumber) {
+  gsmSerial.println("AT+CMGF=1"); // Configuring TEXT mode
+  updateSerial();
+  gsmSerial.println("AT+CMGS=\"+91" + String(theNumber) + "\"");
+  updateSerial();
+  gsmSerial.print("Location not found");
+  updateSerial();
+  gsmSerial.write(26);
+}
 void send_sos(const char *theNumber, const String &coordinates) {
   gsmSerial.println("AT"); // Returns OK if handshake successful
   updateSerial();
@@ -53,7 +62,7 @@ void send_sos(const char *theNumber, const String &coordinates) {
   updateSerial();
   gsmSerial.println("AT+CMGS=\"+91" + String(theNumber) + "\"");
   updateSerial();
-  gsmSerial.print("Emergency! Location: " + coordinates);
+  gsmSerial.print("https://www.google.com/maps?q=" + coordinates);
   updateSerial();
   gsmSerial.write(26);
 }
@@ -61,7 +70,7 @@ void send_sos(const char *theNumber, const String &coordinates) {
 void initiate_sms() { sendSMS = true; }
 
 void IRAM_ATTR theISR() {
-  Serial.println("Button Pressed");
+  // Serial.println("Button Pressed");
   initiate_sms();
 }
 
@@ -93,10 +102,14 @@ void loop() {
   }
 
   if (sendSMS && gps.location.isUpdated()) {
-    String coordinates = "Lat: " + String(gps.location.lat(), 6) + 
-                         ", Lon: " + String(gps.location.lng(), 6);
-    send_sos(number.parent, coordinates);
+    String coordinates = String(gps.location.lat(), 6) + String(gps.location.lng(), 6);
+    send_sos(number.parent, coordinates); 
     send_sos(number.police,coordinates);
     sendSMS = false;
+  }
+  else if (sendSMS) {
+    location_not_found(number.parent);
+    location_not_found(number.police);
+    // sendSMS = false;
   }
 }
